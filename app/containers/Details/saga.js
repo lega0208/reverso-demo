@@ -17,7 +17,6 @@ export function* closeDetailsSaga(action) {
   const detailsData = yield select(({ details: { data } }) => data);
 
   if (action.save) {
-    console.log(detailsData);
     yield put(setData(detailsData, detailsData.id));
     return;
   }
