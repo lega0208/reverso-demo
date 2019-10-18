@@ -49,7 +49,7 @@ export function setData(data) {
       data,
     };
   }
-  if (data.id) {
+  if (data.id !== undefined) {
     return {
       type: SET_DATA,
       id: data.id,

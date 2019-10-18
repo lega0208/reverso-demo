@@ -12,9 +12,10 @@ function FormRow({
   value,
   readOnly = false,
   onChange,
+  className,
 }) {
   return (
-    <FormGroup row={!noRow}>
+    <FormGroup row={!noRow} className={className}>
       {!labelText ? null : (
         <Label for={propName} xs={labelSize}>
           {labelText}
@@ -48,6 +49,7 @@ FormRow.propTypes = {
   value: PropTypes.any,
   readOnly: PropTypes.bool,
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };
 
 export default memo(FormRow);

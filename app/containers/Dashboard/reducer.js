@@ -38,7 +38,7 @@ const dashboardReducer = (state = initialState, action) =>
 
       case SET_DATA:
         if (!action.data) return;
-        if (action.id) {
+        if (action.id !== undefined) {
           draft.data[action.id] = action.data;
           return;
         }

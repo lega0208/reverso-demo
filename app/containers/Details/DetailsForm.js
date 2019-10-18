@@ -29,7 +29,7 @@ export default function DetailsForm({ data }) {
       <FormRow
         labelText="Name:"
         propName="name"
-        value={data.name}
+        value={data.name || ''}
         onChange={makeOnChangeHandler('name')}
       />
       <FormRow labelText="Language:">
@@ -50,7 +50,7 @@ export default function DetailsForm({ data }) {
         propName="url"
         labelText="URL:"
         colSize={10}
-        value={data.url}
+        value={data.url || ''}
         readOnly
       />
       <Row>
@@ -65,51 +65,50 @@ export default function DetailsForm({ data }) {
                 />
               </Col>
             </FormRow>
-            {data.type === 'spoutnik' ? (
-              <>
-                <FormRow
-                  colSize={9}
-                  labelText="Model location:"
-                  labelSize={3}
-                  propName="location"
-                  value={data.location}
-                  onChange={makeOnChangeHandler('location')}
+            <FormRow
+              colSize={9}
+              labelText="Model location:"
+              labelSize={3}
+              propName="location"
+              value={data.location || ''}
+              onChange={makeOnChangeHandler('location')}
+              className={data.type !== 'spoutnik' ? 'd-none' : ''}
+            />
+            <FormRow
+              labelText="Loadbalanced:"
+              labelSize={3}
+              className={data.type !== 'tf' ? 'd-none' : ''}
+            >
+              <Col xs={5}>
+                <input
+                  type="checkbox"
+                  className="align-bottom"
+                  checked={data.loadbalanced === true}
+                  onChange={makeOnChangeHandler(
+                    'loadbalanced',
+                    () => !data.loadbalanced,
+                  )}
                 />
-                <FormRow labelText="Loadbalanced:" labelSize={3}>
-                  <Col xs={5}>
-                    <input
-                      type="checkbox"
-                      className="align-bottom"
-                      checked={data.loadbalanced === true}
-                      onChange={makeOnChangeHandler(
-                        'loadbalanced',
-                        () => !data.loadbalanced,
-                      )}
-                    />
-                  </Col>
-                </FormRow>
-              </>
-            ) : null}
-            {data.type === 'tf' ? (
-              <>
-                <FormRow
-                  colSize={6}
-                  labelText="tuneId:"
-                  labelSize={3}
-                  propName="tuneId"
-                  value={data.tuneId}
-                  onChange={makeOnChangeHandler('tuneId')}
-                />
-                <FormRow
-                  colSize={6}
-                  labelText="modelId:"
-                  labelSize={3}
-                  propName="modelId"
-                  value={data.modelId}
-                  onChange={makeOnChangeHandler('modelId')}
-                />
-              </>
-            ) : null}
+              </Col>
+            </FormRow>
+            <FormRow
+              colSize={6}
+              labelText="tuneId:"
+              labelSize={3}
+              propName="tuneId"
+              value={data.tuneId || ''}
+              onChange={makeOnChangeHandler('tuneId')}
+              className={data.type !== 'tf' ? 'd-none' : ''}
+            />
+            <FormRow
+              colSize={6}
+              labelText="modelId:"
+              labelSize={3}
+              propName="modelId"
+              value={data.modelId || ''}
+              onChange={makeOnChangeHandler('modelId')}
+              className={data.type !== 'tf' ? 'd-none' : ''}
+            />
             <FormRow
               colSize={6}
               labelText="Extra parameters:"
@@ -118,9 +117,9 @@ export default function DetailsForm({ data }) {
               value={
                 typeof data.extraParams === 'object'
                   ? Object.entries(data.extraParams)
-                    .map(keyVal => keyVal.join('='))
-                    .join('&')
-                  : data.extraParams
+                      .map(keyVal => keyVal.join('='))
+                      .join('&')
+                  : data.extraParams || ''
               }
               onChange={makeOnChangeHandler('extraParams')}
             />
