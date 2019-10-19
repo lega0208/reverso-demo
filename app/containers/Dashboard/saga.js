@@ -4,52 +4,17 @@
 
 import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import { parseUrl } from 'utils/url';
 import { GET_DATA } from './constants';
 // eslint-disable-next-line import/named
 import { getDataError, getDataSuccess } from './actions';
 
 export const formatData = (modelsData = []) =>
-  modelsData.map((modelData, i) => {
-    const $url = new URL(modelData.url);
-    const searchParams = $url.search
-      .slice(1)
-      .split('&')
-      .map(keyVal => keyVal.split('='));
-
-    const primaryParamsMap = {
-      model: 'location',
-      loadbalanced: 'loadBalanced',
-      tuneId: 'tuneId',
-      modelId: 'modelId',
-    };
-
-    const primaryParams = {};
-    const preprocessors = {};
-    const extraParams = {};
-
-    searchParams.forEach(([key, val]) => {
-      if (key.includes('corrector')) {
-        preprocessors[key.replace('corrector.', '')] = Boolean(val);
-        return;
-      }
-
-      if (primaryParamsMap[key]) {
-        primaryParams[primaryParamsMap[key]] = val;
-        return;
-      }
-
-      extraParams[key] = val;
-    });
-
-    return {
-      id: i,
-      type: $url.protocol.replace(':', ''),
-      ...modelData,
-      ...primaryParams,
-      preprocessors,
-      extraParams,
-    };
-  });
+  modelsData.map((modelData, i) => ({
+    id: i,
+    ...modelData,
+    ...parseUrl(modelData.url),
+  }));
 
 function addDummyData(data = []) {
   const startIndex = data.length;

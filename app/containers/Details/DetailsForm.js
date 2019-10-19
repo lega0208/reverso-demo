@@ -69,15 +69,15 @@ export default function DetailsForm({ data }) {
               colSize={9}
               labelText="Model location:"
               labelSize={3}
-              propName="location"
-              value={data.location || ''}
-              onChange={makeOnChangeHandler('location')}
+              propName="model"
+              value={data.model || ''}
+              onChange={makeOnChangeHandler('model')}
               className={data.type !== 'spoutnik' ? 'd-none' : ''}
             />
             <FormRow
               labelText="Loadbalanced:"
               labelSize={3}
-              className={data.type !== 'tf' ? 'd-none' : ''}
+              className={data.type !== 'spoutnik' ? 'd-none' : ''}
             >
               <Col xs={5}>
                 <input
