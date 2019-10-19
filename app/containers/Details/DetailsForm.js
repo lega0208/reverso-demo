@@ -50,7 +50,7 @@ export default function DetailsForm({ data }) {
         propName="url"
         labelText="URL:"
         colSize={10}
-        value={data.url || ''}
+        value={decodeURIComponent(data.url) || ''}
         readOnly
       />
       <Row>
@@ -114,13 +114,7 @@ export default function DetailsForm({ data }) {
               labelText="Extra parameters:"
               labelSize={3}
               propName="extraParams"
-              value={
-                typeof data.extraParams === 'object'
-                  ? Object.entries(data.extraParams)
-                      .map(keyVal => keyVal.join('='))
-                      .join('&')
-                  : data.extraParams || ''
-              }
+              value={data.extraParams || ''}
               onChange={makeOnChangeHandler('extraParams')}
             />
           </Container>

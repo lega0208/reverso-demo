@@ -4,6 +4,29 @@
 
 const primaryParams = ['model', 'loadbalanced', 'tuneId', 'modelId'];
 
+export function toParamsString(paramsObj = {}) {
+  return Object.keys(paramsObj).length > 0
+    ? `&${decodeURIComponent(new URLSearchParams(paramsObj).toString())}`
+    : '';
+}
+
+export function fixParamString(paramString) {
+  let fixedParamString = `${paramString}`;
+
+  if (fixedParamString && !fixedParamString.startsWith('&')) {
+    fixedParamString = `&${fixedParamString}`;
+  }
+
+  if (fixedParamString && fixedParamString.endsWith(' ')) {
+    fixedParamString = fixedParamString
+      .replace(/(?<==)([^=&]+) $/, '$1&')
+      .replace(/(?<=&)([^=&]+) $/, '$1=')
+      .replace(/([=&]) $/, '$1');
+  }
+
+  return fixedParamString;
+}
+
 export function parseUrl(urlString = '') {
   const url = new URL(urlString);
 
@@ -13,9 +36,9 @@ export function parseUrl(urlString = '') {
     preprocessors: {},
     extraParams: {},
   };
+  const extraParams = {};
 
   url.searchParams.forEach((val, key) => {
-    console.log(`searchParams: ${url.searchParams}`);
     if (key.includes('corrector')) {
       data.preprocessors[key.replace('corrector.', '')] = Boolean(val);
       return;
@@ -26,8 +49,10 @@ export function parseUrl(urlString = '') {
       return;
     }
 
-    data.extraParams[key] = val;
+    extraParams[key] = val;
   });
+
+  data.extraParams = toParamsString(data.extraParams);
 
   return data;
 }
@@ -39,7 +64,7 @@ export function buildUrl({
   extraParams,
   ...rest
 }) {
-  const urlHref = `${type}${hostOrPath}`;
+  const urlHref = `${type}:${hostOrPath}`;
 
   const searchParamsArray = [
     ...Object.entries(preprocessors).map(([key, val]) => [
@@ -48,12 +73,21 @@ export function buildUrl({
     ]),
     ...primaryParams
       .filter(param => rest[param] !== undefined)
+      .filter(param => {
+        switch (type) {
+          case 'spoutnik':
+            return param === 'loadbalanced' || param === 'model';
+          case 'tf':
+            return param === 'tuneId' || param === 'modelId';
+          default:
+            return false;
+        }
+      })
       .map(param => [param, rest[param]]),
-    ...Object.entries(extraParams),
   ];
 
   const url = new URL(urlHref);
-  url.searchParams = new URLSearchParams(searchParamsArray);
+  url.search = new URLSearchParams(searchParamsArray).toString();
 
-  return url.href;
+  return `${decodeURIComponent(url.href)}${extraParams}`;
 }

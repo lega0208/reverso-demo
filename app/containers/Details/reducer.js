@@ -5,7 +5,7 @@
  */
 
 import produce from 'immer';
-
+import { buildUrl, fixParamString } from 'utils/url';
 import {
   OPEN_DETAILS,
   CLOSE_DETAILS,
@@ -38,9 +38,15 @@ const detailsReducer = produce((draft, action) => {
       if (action.key.includes('.')) {
         const keys = action.key.split('.');
         draft.data[keys[0]][keys[1]] = action.val;
+        draft.data.url = buildUrl(draft.data);
+
         return;
       }
+
       draft.data[action.key] = action.val;
+      draft.data.extraParams = fixParamString(draft.data.extraParams);
+
+      draft.data.url = buildUrl(draft.data);
   }
 }, initialState);
 
