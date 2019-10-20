@@ -67,12 +67,11 @@ export function buildUrl({
   const urlHref = `${type}:${hostOrPath}`;
 
   const searchParamsArray = [
-    ...Object.entries(preprocessors).map(([key, val]) => [
-      `corrector.${key}`,
-      val,
-    ]),
+    ...Object.entries(preprocessors)
+      .filter(preprocessor => !!preprocessor[1])
+      .map(([key, val]) => [`corrector.${key}`, val]),
     ...primaryParams
-      .filter(param => rest[param] !== undefined)
+      .filter(param => !!rest[param])
       .filter(param => {
         switch (type) {
           case 'spoutnik':
