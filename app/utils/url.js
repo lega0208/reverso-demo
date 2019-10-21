@@ -34,8 +34,9 @@ export function parseUrl(urlString = '') {
     type: url.protocol.replace(':', ''),
     hostOrPath: url.hostname || url.pathname,
     preprocessors: {},
-    extraParams: {},
+    extraParams: '',
   };
+
   const extraParams = {};
 
   url.searchParams.forEach((val, key) => {
@@ -52,7 +53,7 @@ export function parseUrl(urlString = '') {
     extraParams[key] = val;
   });
 
-  data.extraParams = toParamsString(data.extraParams);
+  data.extraParams = toParamsString(extraParams);
 
   return data;
 }
